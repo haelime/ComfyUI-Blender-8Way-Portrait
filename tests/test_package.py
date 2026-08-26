@@ -9,7 +9,7 @@ def test_package_exports_comfyui_entry_points():
     tree = ast.parse((ROOT / "__init__.py").read_text(encoding="utf-8"))
     assigned = {
         target.id
-        for node in tree.body
+        for node in ast.walk(tree)
         if isinstance(node, ast.Assign)
         for target in node.targets
         if isinstance(target, ast.Name)
