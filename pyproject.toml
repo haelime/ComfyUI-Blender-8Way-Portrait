@@ -1,0 +1,20 @@
+[project]
+name = "comfyui-blender-8way-portrait"
+version = "0.1.0"
+description = "Render a 3D model in eight Blender directions and generate an AI portrait in one ComfyUI workflow."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "haelime" }]
+dependencies = ["Pillow>=10"]
+
+[project.urls]
+Repository = "https://github.com/haelime/ComfyUI-Blender-8Way-Portrait"
+
+[tool.comfy]
+PublisherId = "haelime"
+DisplayName = "Blender 8-Way + AI Portrait"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
