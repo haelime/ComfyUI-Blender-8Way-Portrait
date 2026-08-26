@@ -1,0 +1,337 @@
+{
+  "id": "b8e8f3c2-3cc5-4f40-8d52-8c3f52151814",
+  "revision": 0,
+  "last_node_id": 15,
+  "last_link_id": 18,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Note",
+      "pos": [-1280, -650],
+      "size": [2570, 270],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": ["BLENDER 8-WAY + AI PORTRAIT\n\n1. Click Choose 3D Model… and select a .blend/.fbx/.glb/.gltf/.obj/.usd/.stl/.ply file.\n2. Edit only the PORTRAIT PROMPT text.\n3. Optional: choose installed LoRAs in Lora Loader (LoraManager). Its trigger words are wired automatically.\n4. Queue once. The left branch makes eight prompt-independent transparent Blender renders; the right branch makes one AI portrait."],
+      "color": "#263238",
+      "bgcolor": "#37474f"
+    },
+    {
+      "id": 2,
+      "type": "NativeModel3DInput",
+      "pos": [-1240, -260],
+      "size": [430, 120],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "INPUT 1 — 3D MODEL",
+      "inputs": [
+        {"name": "model_path", "type": "STRING", "widget": {"name": "model_path"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "model_path", "type": "MODEL_3D_PATH", "links": [1], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "NativeModel3DInput", "cnr_id": "comfyui-blender-8way-portrait"},
+      "widgets_values": [""]
+    },
+    {
+      "id": 3,
+      "type": "BlenderEightWayRender",
+      "pos": [-700, -260],
+      "size": [330, 110],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "title": "PROMPT-INDEPENDENT 8-WAY RENDER",
+      "inputs": [
+        {"name": "model_path", "type": "MODEL_3D_PATH", "link": 1},
+        {"name": "resolution", "type": "INT", "widget": {"name": "resolution"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "renders", "type": "IMAGE", "links": [2], "slot_index": 0},
+        {"name": "alpha", "type": "MASK", "links": [3], "slot_index": 1},
+        {"name": "render_directory", "type": "STRING", "links": null, "slot_index": 2},
+        {"name": "directions", "type": "STRING", "links": null, "slot_index": 3}
+      ],
+      "properties": {"Node name for S&R": "BlenderEightWayRender", "cnr_id": "comfyui-blender-8way-portrait"},
+      "widgets_values": [512]
+    },
+    {
+      "id": 4,
+      "type": "JoinImageWithAlpha",
+      "pos": [-260, -260],
+      "size": [240, 80],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 2},
+        {"name": "alpha", "type": "MASK", "link": 3}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [4, 5], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "JoinImageWithAlpha", "cnr_id": "comfy-core"},
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "PreviewImage",
+      "pos": [100, -350],
+      "size": [430, 330],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "title": "8-WAY PREVIEW (BATCH OF 8)",
+      "inputs": [{"name": "images", "type": "IMAGE", "link": 4}],
+      "outputs": [],
+      "properties": {"Node name for S&R": "Eight Way Preview", "cnr_id": "comfy-core"},
+      "widgets_values": []
+    },
+    {
+      "id": 6,
+      "type": "SaveImage",
+      "pos": [600, -260],
+      "size": [330, 110],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "title": "SAVE 8 TRANSPARENT PNGS",
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 5},
+        {"name": "filename_prefix", "type": "STRING", "widget": {"name": "filename_prefix"}, "link": null}
+      ],
+      "outputs": [],
+      "properties": {"Node name for S&R": "Save Eight Way", "cnr_id": "comfy-core"},
+      "widgets_values": ["blender_8way/render"]
+    },
+    {
+      "id": 7,
+      "type": "Checkpoint Loader (LoraManager)",
+      "pos": [-1240, 370],
+      "size": [380, 100],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "ckpt_name", "type": "COMBO", "widget": {"name": "ckpt_name"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [6], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [7], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [16], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "Checkpoint Loader (LoraManager)", "cnr_id": "comfyui-lora-manager"},
+      "widgets_values": ["waiIllustriousSDXL_v170.safetensors"]
+    },
+    {
+      "id": 8,
+      "type": "Lora Loader (LoraManager)",
+      "pos": [-750, 300],
+      "size": [440, 360],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 6},
+        {"name": "text", "type": "AUTOCOMPLETE_TEXT_LORAS", "widget": {"name": "text"}, "link": null},
+        {"name": "clip", "shape": 7, "type": "CLIP", "link": 7},
+        {"name": "lora_stack", "shape": 7, "type": "LORA_STACK", "link": null}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [11], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [8, 10], "slot_index": 1},
+        {"name": "trigger_words", "type": "STRING", "links": [9], "slot_index": 2},
+        {"name": "loaded_loras", "type": "STRING", "links": null, "slot_index": 3}
+      ],
+      "properties": {
+        "Node name for S&R": "Lora Loader (LoraManager)",
+        "cnr_id": "comfyui-lora-manager",
+        "__lm_widget_ids": ["__lm_autocomplete_meta_text", "text", "loras"]
+      },
+      "widgets_values": [
+        {"version": 1, "textWidgetName": "text"},
+        "",
+        []
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 9,
+      "type": "Prompt (LoraManager)",
+      "pos": [-190, 260],
+      "size": [540, 330],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "INPUT 2 — PORTRAIT PROMPT",
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 8},
+        {"name": "trigger_words1", "shape": 7, "type": "STRING", "link": 9},
+        {"name": "text", "type": "AUTOCOMPLETE_TEXT_PROMPT,STRING", "widget": {"name": "text"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [12], "slot_index": 0},
+        {"name": "PROMPT", "type": "STRING", "links": null, "slot_index": 1}
+      ],
+      "properties": {
+        "Node name for S&R": "Portrait Prompt",
+        "cnr_id": "comfyui-lora-manager",
+        "__lm_widget_ids": ["__lm_autocomplete_meta_text", "text"]
+      },
+      "widgets_values": [
+        {"version": 1, "textWidgetName": "text"},
+        "fantasy game character portrait, head and shoulders, expressive face, polished mobile game art, clean silhouette, dramatic rim lighting, detailed costume, simple dark background"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "CLIPTextEncode",
+      "pos": [-190, 650],
+      "size": [540, 210],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "FIXED NEGATIVE PROMPT",
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 10},
+        {"name": "text", "type": "STRING", "widget": {"name": "text"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [13], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "Portrait Negative", "cnr_id": "comfy-core"},
+      "widgets_values": ["low quality, blurry, deformed face, bad anatomy, extra limbs, extra fingers, cropped head, duplicate, watermark, signature, logo, readable text"]
+    },
+    {
+      "id": 11,
+      "type": "EmptyLatentImage",
+      "pos": [-190, 930],
+      "size": [315, 110],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "PORTRAIT 1024 × 1024",
+      "inputs": [
+        {"name": "width", "type": "INT", "widget": {"name": "width"}, "link": null},
+        {"name": "height", "type": "INT", "widget": {"name": "height"}, "link": null},
+        {"name": "batch_size", "type": "INT", "widget": {"name": "batch_size"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [14], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "Portrait Latent", "cnr_id": "comfy-core"},
+      "widgets_values": [1024, 1024, 1]
+    },
+    {
+      "id": 12,
+      "type": "KSampler",
+      "pos": [480, 410],
+      "size": [330, 270],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "title": "AI PORTRAIT SAMPLER",
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 11},
+        {"name": "positive", "type": "CONDITIONING", "link": 12},
+        {"name": "negative", "type": "CONDITIONING", "link": 13},
+        {"name": "latent_image", "type": "LATENT", "link": 14},
+        {"name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
+        {"name": "steps", "type": "INT", "widget": {"name": "steps"}, "link": null},
+        {"name": "cfg", "type": "FLOAT", "widget": {"name": "cfg"}, "link": null},
+        {"name": "sampler_name", "type": "COMBO", "widget": {"name": "sampler_name"}, "link": null},
+        {"name": "scheduler", "type": "COMBO", "widget": {"name": "scheduler"}, "link": null},
+        {"name": "denoise", "type": "FLOAT", "widget": {"name": "denoise"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [15], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "Portrait Sampler", "cnr_id": "comfy-core"},
+      "widgets_values": [865304112, "randomize", 28, 5.5, "dpmpp_2m_sde", "karras", 1.0]
+    },
+    {
+      "id": 13,
+      "type": "VAEDecode",
+      "pos": [920, 410],
+      "size": [220, 80],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 15},
+        {"name": "vae", "type": "VAE", "link": 16}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [17, 18], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "Portrait Decode", "cnr_id": "comfy-core"},
+      "widgets_values": []
+    },
+    {
+      "id": 14,
+      "type": "PreviewImage",
+      "pos": [1250, 260],
+      "size": [430, 430],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "title": "AI PORTRAIT PREVIEW",
+      "inputs": [{"name": "images", "type": "IMAGE", "link": 17}],
+      "outputs": [],
+      "properties": {"Node name for S&R": "Portrait Preview", "cnr_id": "comfy-core"},
+      "widgets_values": []
+    },
+    {
+      "id": 15,
+      "type": "SaveImage",
+      "pos": [1250, 770],
+      "size": [350, 110],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "title": "SAVE AI PORTRAIT",
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 18},
+        {"name": "filename_prefix", "type": "STRING", "widget": {"name": "filename_prefix"}, "link": null}
+      ],
+      "outputs": [],
+      "properties": {"Node name for S&R": "Save Portrait", "cnr_id": "comfy-core"},
+      "widgets_values": ["portrait/character_portrait"]
+    }
+  ],
+  "links": [
+    [1, 2, 0, 3, 0, "MODEL_3D_PATH"],
+    [2, 3, 0, 4, 0, "IMAGE"],
+    [3, 3, 1, 4, 1, "MASK"],
+    [4, 4, 0, 5, 0, "IMAGE"],
+    [5, 4, 0, 6, 0, "IMAGE"],
+    [6, 7, 0, 8, 0, "MODEL"],
+    [7, 7, 1, 8, 2, "CLIP"],
+    [8, 8, 1, 9, 0, "CLIP"],
+    [9, 8, 2, 9, 1, "STRING"],
+    [10, 8, 1, 10, 0, "CLIP"],
+    [11, 8, 0, 12, 0, "MODEL"],
+    [12, 9, 0, 12, 1, "CONDITIONING"],
+    [13, 10, 0, 12, 2, "CONDITIONING"],
+    [14, 11, 0, 12, 3, "LATENT"],
+    [15, 12, 0, 13, 0, "LATENT"],
+    [16, 7, 2, 13, 1, "VAE"],
+    [17, 13, 0, 14, 0, "IMAGE"],
+    [18, 13, 0, 15, 0, "IMAGE"]
+  ],
+  "groups": [
+    {"id": 1, "title": "A. 3D MODEL → BLENDER 8-WAY (NO PROMPT)", "bounding": [-1270, -320, 2240, 610], "color": "#3f789e", "font_size": 24, "flags": {}},
+    {"id": 2, "title": "B. PROMPT → LORA-MANAGED AI PORTRAIT", "bounding": [-1270, 210, 2990, 900], "color": "#a87932", "font_size": 24, "flags": {}}
+  ],
+  "config": {},
+  "extra": {
+    "ds": {"scale": 0.64, "offset": [825, 450]},
+    "frontendVersion": "1.26.7"
+  },
+  "version": 0.4
+}

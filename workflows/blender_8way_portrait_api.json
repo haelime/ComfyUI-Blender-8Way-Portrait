@@ -1,0 +1,95 @@
+{
+  "2": {
+    "class_type": "NativeModel3DInput",
+    "inputs": {
+      "model_path": ""
+    }
+  },
+  "3": {
+    "class_type": "BlenderEightWayRender",
+    "inputs": {
+      "model_path": ["2", 0],
+      "resolution": 512
+    }
+  },
+  "4": {
+    "class_type": "JoinImageWithAlpha",
+    "inputs": {
+      "image": ["3", 0],
+      "alpha": ["3", 1]
+    }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["4", 0],
+      "filename_prefix": "blender_8way/render"
+    }
+  },
+  "7": {
+    "class_type": "Checkpoint Loader (LoraManager)",
+    "inputs": {
+      "ckpt_name": "waiIllustriousSDXL_v170.safetensors"
+    }
+  },
+  "8": {
+    "class_type": "Lora Loader (LoraManager)",
+    "inputs": {
+      "model": ["7", 0],
+      "clip": ["7", 1],
+      "text": ""
+    }
+  },
+  "9": {
+    "class_type": "Prompt (LoraManager)",
+    "inputs": {
+      "clip": ["8", 1],
+      "trigger_words1": ["8", 2],
+      "text": "fantasy game character portrait, head and shoulders, expressive face, polished mobile game art, clean silhouette, dramatic rim lighting, detailed costume, simple dark background"
+    }
+  },
+  "10": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["8", 1],
+      "text": "low quality, blurry, deformed face, bad anatomy, extra limbs, extra fingers, cropped head, duplicate, watermark, signature, logo, readable text"
+    }
+  },
+  "11": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    }
+  },
+  "12": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["8", 0],
+      "positive": ["9", 0],
+      "negative": ["10", 0],
+      "latent_image": ["11", 0],
+      "seed": 865304112,
+      "steps": 28,
+      "cfg": 5.5,
+      "sampler_name": "dpmpp_2m_sde",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "13": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["12", 0],
+      "vae": ["7", 2]
+    }
+  },
+  "15": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["13", 0],
+      "filename_prefix": "portrait/character_portrait"
+    }
+  }
+}
