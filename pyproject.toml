@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-blender-8way-portrait"
-version = "0.1.0"
+version = "0.2.0"
 description = "Render a 3D model in eight Blender directions and generate an AI portrait in one ComfyUI workflow."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -17,4 +17,3 @@ DisplayName = "Blender 8-Way + AI Portrait"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-

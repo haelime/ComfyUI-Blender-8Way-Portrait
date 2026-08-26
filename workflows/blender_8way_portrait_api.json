@@ -37,7 +37,15 @@
     "inputs": {
       "model": ["7", 0],
       "clip": ["7", 1],
-      "text": ""
+      "text": "<lora:pixel-Illustrius.safetensors:0.45>",
+      "loras": [
+        {
+          "name": "pixel-Illustrius.safetensors",
+          "strength": 0.45,
+          "clipStrength": 0.45,
+          "active": true
+        }
+      ]
     }
   },
   "9": {
@@ -45,7 +53,7 @@
     "inputs": {
       "clip": ["8", 1],
       "trigger_words1": ["8", 2],
-      "text": "fantasy game character portrait, head and shoulders, expressive face, polished mobile game art, clean silhouette, dramatic rim lighting, detailed costume, simple dark background"
+      "text": "1girl, solo, pixel art, fantasy game character portrait, head and shoulders, expressive face, polished mobile game art, clean silhouette, dramatic rim lighting, detailed fantasy armor, simple dark background, masterpiece, best quality"
     }
   },
   "10": {

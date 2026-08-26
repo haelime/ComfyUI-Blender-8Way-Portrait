@@ -54,6 +54,14 @@ def test_api_workflow_uses_installed_checkpoint_and_expected_defaults():
     prompt = load_api_workflow()
     assert prompt["7"]["inputs"]["ckpt_name"] == "waiIllustriousSDXL_v170.safetensors"
     assert prompt["8"]["class_type"] == "Lora Loader (LoraManager)"
+    assert prompt["8"]["inputs"]["loras"] == [
+        {
+            "name": "pixel-Illustrius.safetensors",
+            "strength": 0.45,
+            "clipStrength": 0.45,
+            "active": True,
+        }
+    ]
     assert prompt["9"]["class_type"] == "Prompt (LoraManager)"
     assert prompt["3"]["inputs"]["resolution"] == 512
     assert prompt["11"]["inputs"] == {"width": 1024, "height": 1024, "batch_size": 1}
